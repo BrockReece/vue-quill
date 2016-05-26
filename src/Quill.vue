@@ -40,13 +40,13 @@
                     type: Array,
                     default() {
                         return []
-                    },
+                    }
                 },
                 keyBindings: {
                     type: Array,
                     default() {
                         return []
-                    },
+                    }
                 },
                 output : {
                     default : 'delta'
@@ -58,29 +58,34 @@
 
             data() {
                 return {
-                    editor: {},
+                    editor: {}
+                }
+            },
+
+            watch: {
+                // Whenever 'content' on this vm updates, communicate that down to Quill.
+                content(newValue) {
+                    if (JSON.stringify(newValue) !== JSON.stringify(this.getEditorContents())) {
+                        this.updateEditorContents()
+                    }
                 }
             },
 
             ready() {
                 this.editor = new Quill(this.$els.quill, {
                     modules: { toolbar: this.$els.toolbar },
-                    theme: 'snow',
+                    theme: 'snow'
                 })
 
                 this.formats.map((format) => {
                     this.editor.addFormat(format.name, format.options)
                 })
 
-                if (this.output != 'delta') {
-                    this.editor.setHTML(this.content);
-                } else {
-                    this.editor.setContents(this.content);
-                }
+                this.updateEditorContents()
 
                 this.editor.on('text-change', (delta, source) => {
                     this.$dispatch('text-change', this.editor, delta, source)
-                    this.content = this.output != 'delta' ? this.editor.getHTML() : this.editor.getContents()
+                    this.content = this.getEditorContents()
                 })
 
                 this.editor.on('selection-change', (range) => {
@@ -89,7 +94,7 @@
 
                 if (typeof this.author !== 'undefined') {
                     this.editor.addModule('authorship', {
-                        authorId: this.author,
+                        authorId: this.author
                     })
                 }
 
@@ -103,20 +108,39 @@
             },
 
             events: {
-                'set-content' : function (content) {
-                    this.editor.setContents(content)
+                'set-content': function (content) {
+                    this.setEditorOps(content)
                 },
 
-                'set-html' : function (html) {
-                    this.editor.setHTML(html)
+                'set-html': function (html) {
+                    this.setEditorHtml(html)
                 },
 
-                'focus-editor' : function () {
+                'focus-editor': function () {
                     this.focusEditor()
                 }
             },
 
-            methods : {
+            methods: {
+                getEditorContents() {
+                    return this.output != 'delta' ? this.editor.getHTML() : this.editor.getContents()
+                },
+
+                updateEditorContents() {
+                    if (this.output != 'delta') {
+                        this.setEditorHtml(this.content)
+                    } else {
+                        this.setEditorOps(this.content)
+                    }
+                },
+
+                setEditorOps(ops) {
+                    this.editor.setContents(ops)
+                },
+
+                setEditorHtml(html) {
+                    this.editor.setHTML(html)
+                },
 
                 focusEditor(e) {
 
@@ -139,7 +163,6 @@
 
 
                 }
-
-            },
+            }
         }
     </script>
