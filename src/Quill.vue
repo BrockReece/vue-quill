@@ -32,7 +32,6 @@
         data() {
           return {
             editor: {},
-            editorContent: this.content,
             defaultConfig: {
               modules: {
                 toolbar: [
@@ -69,14 +68,14 @@
           })
 
           if (this.output !== 'delta') {
-            this.editor.root.innerHTML = this.editorContent
+            this.editor.root.innerHTML = this.content
           } else {
-            this.editor.setContents(this.editorContent)
+            this.editor.setContents(this.content)
           }
 
           this.editor.on('text-change', (delta, source) => {
             this.$emit('text-change', this.editor, delta, source)
-            this.editorContent = this.output !== 'delta' ? this.editor.root.innerHTML : this.editor.getContents()
+            this.$emit('quill-update', this.output !== 'delta' ? this.editor.root.innerHTML : this.editor.getContents())
           })
 
           this.editor.on('selection-change', (range) => {

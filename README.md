@@ -21,8 +21,10 @@ Install the vue plugin
 Vue.use(require('vue-quill'))
 ```
 ### Component
+
+To be able to update the variable value (due to the "one-way-down" binding of Vue 2) you'll need to listen to the `quill-update` event
 ```html
-<quill :content="content"></quill>
+<quill :content="content" v-on:quill-update="methodToUpdateContent"></quill>
 ```
 You may want to initialize the variable as a valid delta object too
 
@@ -33,6 +35,11 @@ data() {
             ops: [],
         },
     }
+},
+methods: {
+  methodToUpdateContent(content) {
+    this.content = content;
+  }
 }
 ```
 
