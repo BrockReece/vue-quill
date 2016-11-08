@@ -6,9 +6,13 @@ A vue component wrapping the quill editor
 npm install --save vue-quill
 ```
 
-You will also need to include the following css file in your project
+You will also need to include the css file matching your chosen theme in your project
 ```html
-<link href="https://cdnjs.cloudflare.com/ajax/libs/quill/0.20.1/quill.snow.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.1.5/quill.snow.min.css" rel="stylesheet">
+```
+or
+```html
+<link href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.1.5/quill.bubble.min.css" rel="stylesheet">
 ```
 
 ## Usage
@@ -18,9 +22,9 @@ Vue.use(require('vue-quill'))
 ```
 ### Component
 ```html
-<quill :content.sync="content"></quill>
+<quill :content="content"></quill>
 ```
-You may want to initialize the synced variable as a valid delta object too
+You may want to initialize the variable as a valid delta object too
 
 ```js
 data() {
@@ -34,7 +38,7 @@ data() {
 
 ### Configuration
 ```html
-<quill :content.sync="content" :config="config"></quill>
+<quill :content="content" :config="config"></quill>
 ```
 You can also provide a config object as described in http://quilljs.com/docs/configuration/
 
@@ -56,13 +60,13 @@ data() {
 The plugin also installs a custom filter for converting a delta object to raw html
 
 ```html
-{{{ content | quill }}}
+<span v-html="content | quill"></span>
 ```
 
 ## Options
 By default, the component outputs the content as a delta object, you can pass in a prop to return raw html
 ```html
-<quill :content.sync="content" output="html"></quill>
+<quill :content="content" output="html"></quill>
 ```
 
 ## Custom Formats
@@ -85,18 +89,22 @@ keyBindings: [
     {
         key: 's',
         method: function(range) {
-            this.$dispatch('save', this.editor, range)
-            return false        
+            this.$emit('save', this.editor, range)
+            return false
         },
     },
 ]
 ```
 
 ## Events
-This quill component dispatches events when the text or selection changes on the quill editor, you can listen for these on the parent component by declaring an event similar to this
+This quill component emit events when the text or selection changes on the quill editor, you can listen for these on the parent component by declaring an event similar to this
+```html
+<quill :content="content" v-on:selection-change="selectionChange"></quill>
+```
+
 ```js
-events: {
-    'selection-change'(editor, range) {
+methods: {
+    selectionChange(editor, range) {
         if (range) {
             if (range.start !== range.end) {
                 this.selectedText = editor.getText(range.start, range.end)
