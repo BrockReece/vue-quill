@@ -88,7 +88,7 @@
 
             if (this.content && this.content !== '') {
 	            if (this.output != 'delta') {
-	                this.editor.pasteHTML(this.content)
+                    this.editor.root.innerHTML = this.content
 	            } else {
 	                this.editor.setContents(this.content)
 	            }

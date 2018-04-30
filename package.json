@@ -1,6 +1,6 @@
 {
   "name": "vue-quill",
-  "version": "1.4.0",
+  "version": "1.5.0-0",
   "description": "Vue quill component and filter",
   "main": "vue-quill.js",
   "browserify": {
