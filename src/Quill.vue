@@ -150,5 +150,10 @@
                 this.bus.$off('set-html')
             }
         },
+        watch: {
+            content (val) {
+                this.output === 'html'?this.$emit('set-html', val):this.$emit('set-content', val)
+            }
+        }
     }
 </script>
