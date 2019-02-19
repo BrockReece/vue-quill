@@ -96,7 +96,11 @@
 
             this.editor.on('text-change', (delta, source) => {
                 this.$emit('text-change', this.editor, delta, source)
-                this.$emit('input', this.output != 'delta' ? this.editor.root.innerHTML : this.editor.getContents())
+                if (this.editor.getText().length <= 1) {
+                  this.$emit('input', '')
+                } else {
+                  this.$emit('input', this.output != 'delta' ? this.editor.root.innerHTML : this.editor.getContents())
+                }
             })
 
             this.editor.on('selection-change', (range) => {
